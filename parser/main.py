@@ -3,8 +3,7 @@ from checker import spellings
 
 cp = load_parser('sql2.fcfg')
 # query = input('what\'s your query?')
-query = 'What illiterates in rohtak'
-# query = spellings(query
+query = 'What literacy are located in Kerela'
 trees = list(cp.parse(query.split()))
 print(trees)
 answer = trees[0].label()['SEM']

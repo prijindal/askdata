@@ -11,3 +11,59 @@
     - ```SELECT (Literate_-_Females/Total_Females)*100 FROM EDUCATION_LEVEL```
 
 - Query #2
+    - Increase in no. of schools affect increase in literacy rate
+    - Bar graph with x axis as years, 2 bars: one with no. of schools, other literacy rate
+
+- Query #3
+    - Literacy rate of females in Punjab vs Tamil Nadu
+    - A plot graph with x as ages, y axis with literacy rate for Punjab and Tamil Nadu
+    - ```
+        SELECT punjab_percentage_table.age_group, punjab_percentage, tamil_nadu_percentage FROM (
+            SELECT age_group, (literate_females/total_females)*100 as punjab_percentage
+                    FROM education
+                    WHERE area_name LIKE 'State - PUNJAB%'
+                    AND age_group NOT LIKE '%age%'
+                    AND `total__rural__urban`='Total'
+                    AND year=2011
+                    GROUP BY age_group
+                    ORDER BY (`age_group` * 1)
+                    asc) as punjab_percentage_table,(
+            SELECT age_group, (literate_females/total_females)*100 as tamil_nadu_percentage
+                    FROM education
+                    WHERE area_name LIKE 'State - TAMIL NADU%'
+                    AND age_group NOT LIKE '%age%'
+                    AND `total__rural__urban`='Total'
+                    AND year=2011
+                    GROUP BY age_group
+                    ORDER BY (`age_group` * 1)
+                    asc) as tamil_nadu_education_table
+            WHERE tamil_nadu_education_table.age_group=punjab_percentage_table.age_group;
+        ```
+
+- Query #4
+    - Increase in literay rate in Tamil Nadu over the years
+    - X axis as years, y axis as literacy rates
+    - ```
+        SELECT (literate_females/total_females)*100 as literacy_rate, year
+            FROM education
+            WHERE area_name like '%State - TAMIL NADU%'
+            AND age_group = 'All ages' and `total__rural__urban`='Total';
+    ```
+
+- Query #5
+    - Which state had the maximum literacy rate growth in the past 5 years?
+    - A scatter graph with literacy growth rate by state in 5 years, x axis as years, y axis as literacy growth for each state
+    - 
+    ```
+        SELECT CASE 
+                WHEN RIGHT(area_name, 1) BETWEEN '0' AND '9' THEN 
+                LEFT(area_name, Length(area_name) - 2) 
+                ELSE area_name 
+            END AS area_name,
+            (literate_females/total_females)*100 as literacy_rate, year
+        FROM education
+        GROUP BY 1
+    ```
+
+- Query #6
+    - 

@@ -44,7 +44,7 @@
     - Increase in literay rate in Tamil Nadu over the years
     - X axis as years, y axis as literacy rates
     - ```
-        SELECT (literate_females/total_females)*100 as literacy_rate, year
+        SELECT year, (literate_females/total_females)*100 as literacy_rate
             FROM education
             WHERE area_name like '%State - TAMIL NADU%'
             AND age_group = 'All ages' and `total__rural__urban`='Total';
@@ -55,14 +55,20 @@
     - A scatter graph with literacy growth rate by state in 5 years, x axis as years, y axis as literacy growth for each state
     - 
     ```
-        SELECT CASE 
-                WHEN RIGHT(area_name, 1) BETWEEN '0' AND '9' THEN 
-                LEFT(area_name, Length(area_name) - 2) 
-                ELSE area_name 
-            END AS area_name,
+        SELECT area_name, education_2001.literacy_rate as literacy_2001, education_2011.literacy_rate as literacy_2011 FROM 
+            (SELECT state_code,
             (literate_females/total_females)*100 as literacy_rate, year
-        FROM education
-        GROUP BY 1
+            FROM education
+            WHERE year=2001 AND age_group = 'All ages' and `total__rural__urban`='Total'
+            ) as education_2001,
+            (SELECT area_name, state_code,
+            (literate_females/total_females)*100 as literacy_rate, year
+            FROM education
+            WHERE year=2011 AND age_group = 'All ages' and `total__rural__urban`='Total'
+            ) as education_2011
+            WHERE education_2011.state_code = education_2001.state_code
+            AND area_name NOT LIKE 'INDIA';
+
     ```
 
 - Query #6

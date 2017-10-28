@@ -1,0 +1,13 @@
+SELECT area_name, education_2001.literacy_rate as literacy_2001, education_2011.literacy_rate as literacy_2011 FROM 
+(SELECT state_code,
+(literate_females/total_females)*100 as literacy_rate, year
+FROM education
+WHERE year=2001 AND age_group = 'All ages' and `total__rural__urban`='Total'
+) as education_2001,
+(SELECT area_name, state_code,
+(literate_females/total_females)*100 as literacy_rate, year
+FROM education
+WHERE year=2011 AND age_group = 'All ages' and `total__rural__urban`='Total'
+) as education_2011
+WHERE education_2011.state_code = education_2001.state_code
+AND area_name NOT LIKE 'INDIA';

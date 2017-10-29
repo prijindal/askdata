@@ -1,28 +1,20 @@
 import React, { Component } from 'react';
 import { RadioGroup, Radio } from 'react-radio-group';
-import fetch from 'node-fetch';
-import 'keen-dataviz/dist/keen-dataviz.js';
-import 'keen-dataviz/dist/keen-dataviz.css';
+
+import Result from './Result';
 import './App.css';
 
-const Keen = window.Keen;
-
 class App extends Component {
-  componentDidMount() {
-    this.fetchData()
-  }
-
   state = {
+    query: null,
+    submittedQuery: null,
+    submitted: false,
     data: null,
-    query: 'Literacy rate of females in Punjab vs Tamil Nadu',
-    type: 'bar'
+    labels: null,
   }
 
   fetchData = async () => {
-    let sqlbody = await fetch('http://localhost:3000/sql.txt');
-    sqlbody = await sqlbody.text();
-    let body = {SQL: sqlbody}
-
+    let body = {query: this.state.query}
     
     let resp = await fetch('http://localhost:5000', {
       method: 'POST',
@@ -34,46 +26,36 @@ class App extends Component {
     })
     resp = await resp.json()
     this.setState({
+      submittedQuery: this.state.query,
       data: resp.data,
       labels: resp.field_names
-    }, this.renderGraph)
+    })
   }
 
-  renderGraph() {
-    var chart = new Keen.Dataviz()
-    .el('#dom-selector')
-    .colors(['red', 'orange', 'green'])    
-    .height(280)
-    .title(this.state.query)
-    .type(this.state.type)
-    .prepare();
-    
-    // Fetch data from the API:
-    //  Imaginary callback ...
-    chart
-      .data({
-        result: this.state.data
-      })
-      .labels(this.state.labels.splice(1))
-      .render();
-  }
-
-  handleRadio = (value) => {
+  onSubmit = (e) => {
+    e.preventDefault()
     this.setState({
-      type: value
-    }, this.renderGraph)
+      submitted: true,
+    }, this.fetchData)
+  }
+
+  handleInput = (e) => {
+    this.setState({
+      query: e.target.value
+    })
   }
 
   render() {
     return (
       <div className="App">
-        <RadioGroup name="graph" selectedValue={this.state.type} onChange={this.handleRadio}>
-          <Radio value="bar" />Bar Graph
-          <Radio value="line" />Line Graph
-        </RadioGroup>
-        <div id="dom-selector" />
+        <form onSubmit={this.onSubmit}>
+          <input type="text" onChange={this.handleInput}/>
+        </form>
+        {this.state.submitted &&
+          <Result query={this.state.submittedQuery} data={this.state.data} labels={this.state.labels}/>
+        }
       </div>
-    );
+    )
   }
 }
 

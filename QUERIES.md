@@ -72,4 +72,8 @@
     ```
 
 - Query #6
-    - 
+    - Literacy rate in Kerela
+    - ```
+        SELECT (literate_females/total_females)*100 as literacy_rate FROM education WHERE state_name='kerela' AND age_group = 'All ages' and `total__rural__urban`='Total'
+    ```
+

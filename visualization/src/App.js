@@ -45,12 +45,26 @@ class App extends Component {
     })
   }
 
+  resetVariable = () => {
+    this.setState({
+      query: null,
+      submittedQuery: null,
+      submitted: false,
+      data: null,
+      labels: null,
+    })
+  }
+
   render() {
     return (
       <div className="App">
-        <form onSubmit={this.onSubmit}>
-          <input type="text" onChange={this.handleInput}/>
-        </form>
+        <div className="UserInput">
+          <form onSubmit={this.onSubmit}>
+            <input type="text" onChange={this.handleInput}/>
+            <button type="submit">Plot</button>
+          </form>
+          <button type="submit" onClick={this.resetVariable}>Reset</button>
+        </div>
         {this.state.submitted &&
           <Result query={this.state.submittedQuery} data={this.state.data} labels={this.state.labels}/>
         }

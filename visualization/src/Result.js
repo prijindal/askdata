@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { RadioGroup, Radio } from 'react-radio-group';
 import fetch from 'node-fetch';
+import lodash from 'lodash';
 import 'keen-dataviz/dist/keen-dataviz.js';
 import 'keen-dataviz/dist/keen-dataviz.css';
 
@@ -16,7 +17,23 @@ class Result extends Component {
   state = {
     type: 'bar'
   }
-  componentDidUpdate() {
+
+  constructor(props) {
+    super(props)
+    this.renderGraph = lodash.throttle(this.renderGraph, 1000);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if(this.state.type != nextState.type && this.props.query != nextProps.query) {
+      return true;
+    }
+    if(this.state.data != nextProps.data) {
+      return true;
+    }
+    return false;
+  }
+
+  componentDidUpdate(nextProps, nextState) {
     this.renderGraph();
   }
 

@@ -29,13 +29,13 @@ def attribute_name_parser(attr, created_indexes={}, removed_attrs=[], replace=Tr
     attr = attr.strip('_')
     return attr, created_indexes
 
-file_names = os.listdir("C:\\Users\This Pc\PycharmProjects\\askdata\data-xsl")
-file_names = file_names[:10]
+file_names = os.listdir(os.path.dirname(os.path.realpath(__file__)) + "/data/")
 all_columns = []
 for name in file_names:
+    if "INDIA" not in name:
+        continue;
     try:
-        print(name)
-        name = "C:\\Users\This Pc\PycharmProjects\\askdata\data-xsl\\" + name
+        name = os.path.dirname(os.path.realpath(__file__)) + "/data/" + name
         df = pd.read_excel(name)
         len_col = len(df.index)
         ret_val=""
